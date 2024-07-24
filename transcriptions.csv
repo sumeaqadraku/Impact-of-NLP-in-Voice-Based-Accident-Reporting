@@ -1,0 +1,15 @@
+audio_file,transcription,word_frequency,entities
+recorded_audio (13).wav,an accident happened between a bus and a car,"Counter({'accident': 1, 'happened': 1, 'bus': 1, 'car': 1})",[]
+recorded_audio (14).wav,the location is x Street 101,"Counter({'location': 1, 'x': 1, 'street': 1, '101': 1})",[]
+recorded_audio (15).wav,no there are not any injuries,Counter({'injuries': 1}),[]
+recorded_audio (16).wav,the overall condition is ok,"Counter({'overall': 1, 'condition': 1, 'ok': 1})",[]
+recorded_audio (19).wav,at the moment I do not see any witnesses,"Counter({'moment': 1, 'see': 1, 'witnesses': 1})",[]
+recorded_audio (18).wav,one of the vehicles is in Bad shape and the other one is not critical,"Counter({'one': 2, 'vehicles': 1, 'bad': 1, 'shape': 1, 'critical': 1})","[('one', 'CARDINAL'), ('Bad', 'LANGUAGE')]"
+recorded_audio (16) (1).wav,the location of the accident is near the YC,"Counter({'location': 1, 'accident': 1, 'near': 1, 'yc': 1})",[]
+recorded_audio (17) (1).wav,one person is injured and he's holding his head,"Counter({'one': 1, 'person': 1, 'injured': 1, 'holding': 1, 'head': 1})","[('one', 'CARDINAL')]"
+recorded_audio (13).wav,the accident happened in a collision with a truck,"Counter({'accident': 1, 'happened': 1, 'collision': 1, 'truck': 1})",[]
+recorded_audio (14).wav,the location of the accident is douro Street 123,"Counter({'location': 1, 'accident': 1, 'douro': 1, 'street': 1, '123': 1})","[('douro Street 123', 'ORG')]"
+recorded_audio (15).wav,we don't have any injuries but the car is wrecked,"Counter({'injuries': 1, 'car': 1, 'wrecked': 1})",[]
+recorded_audio (16).wav,not critical but still they are not in good shape,"Counter({'critical': 1, 'still': 1, 'good': 1, 'shape': 1})",[]
+recorded_audio (17).wav,yes there are some Witnesses that are standing by the car,"Counter({'yes': 1, 'witnesses': 1, 'standing': 1, 'car': 1})","[('Witnesses', 'NORP')]"
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident Reporting Voice Recorder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        .button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
+        #transcription {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        #question {
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Accident Reporting Voice Recorder</h1>
+    <p id="question">Question will appear here...</p>
+    <button id="recordButton" class="button" onclick="startRecording()">Start Recording</button>
+    <button id="stopButton" class="button" onclick="stopRecording()" disabled>Stop Recording</button>
+    <button id="saveButton" class="button" onclick="saveRecording()" disabled>Save Recording</button>
+    <p id="status">Status: Waiting to record</p>
+    <p id="transcription"></p>
+
+    <script>
+        const questions = [
+            "Please describe the accident in detail.",
+            "What is the location of the accident?",
+            "Were there any injuries? If so, please describe them.",
+            "What is the condition of the vehicles involved?",
+            "Were there any witnesses? If so, please provide their details."
+        ];
+        let currentQuestionIndex = 0;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById('question').textContent = questions[currentQuestionIndex];
+
+        function startRecording() {
+            document.getElementById('status').textContent = 'Status: Recording...';
+            document.getElementById('recordButton').disabled = true;
+            document.getElementById('stopButton').disabled = false;
+            document.getElementById('saveButton').disabled = true;
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+                    mediaRecorder.start();
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        document.getElementById('status').textContent = 'Status: Recording stopped';
+                        document.getElementById('recordButton').disabled = false;
+                        document.getElementById('stopButton').disabled = true;
+                        document.getElementById('saveButton').disabled = false;
+
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        document.getElementById('saveButton').setAttribute('data-audio-url', audioUrl);
+                        audioChunks = [];
+
+                        const formData = new FormData();
+                        formData.append('audio', audioBlob, 'audio.webm');
+
+                        fetch('/process_audio', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Server Response:', data);
+                            if (data.error) {
+                                document.getElementById('transcription').textContent = `Error: ${data.error}`;
+                            } else {
+                                document.getElementById('transcription').textContent += `Q${currentQuestionIndex + 1}: ${questions[currentQuestionIndex]}\nA${currentQuestionIndex + 1}: ${data.text}\n\n`;
+                                currentQuestionIndex++;
+                                if (currentQuestionIndex < questions.length) {
+                                    document.getElementById('question').textContent = questions[currentQuestionIndex];
+                                } else {
+                                    document.getElementById('question').textContent = "All questions answered. Thank you!";
+                                    document.getElementById('recordButton').disabled = true;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('transcription').textContent = 'Error processing audio.';
+                        });
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('status').textContent = `Status: Error accessing microphone - ${error.message}`;
+                    console.error('Error accessing microphone:', error);
+                    document.getElementById('recordButton').disabled = false;
+                    document.getElementById('stopButton').disabled = true;
+                    document.getElementById('saveButton').disabled = true;
+                });
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+        }
+
+        function saveRecording() {
+            const audioUrl = document.getElementById('saveButton').getAttribute('data-audio-url');
+            if (audioUrl) {
+                const a = document.createElement('a');
+                a.href = audioUrl;
+                a.download = 'recorded_audio.webm';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                console.error('No audio URL found');
+            }
+        }
+    </script>
+</body>
+</html>
