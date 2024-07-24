@@ -1,5 +1,0 @@
-audio_file,transcription,word_frequency,entities
-73689-Police_radio_dispatch_young_woman_says_car_15_responding-BLASTWAVEFX-11241.wav,Audio unintelligible,"Counter({'audio': 1, 'unintelligible': 1})",[]
-62571-Fire_dispatch_radio_young_male_accident_at_19_and_gratiot-BLASTWAVEFX-01511.wav,Audio unintelligible,"Counter({'audio': 1, 'unintelligible': 1})",[]
-52463-POLICE_DISPATCH_UNFILTERED_MIDDLE_AGE_FEMALE_BACKUP_IS_EN_ROUTE_02.wav,backup is in route,"Counter({'backup': 1, 'route': 1})",[]
-49977-FIRE_DISPATCH_RADIO_UNFILTERED_MIDDLE_AGE_FEMALE_ACCIDENT_AT_19_AND_GRATIOT_01.wav,accident at 19 and gratiot,"Counter({'accident': 1, '19': 1, 'gratiot': 1})","[('19', 'CARDINAL')]"
